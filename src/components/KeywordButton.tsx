@@ -1,7 +1,7 @@
-import { Button } from "@mui/material";
+import { Chip } from "@mui/material";
 import styled from "styled-components";
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Chip)`
   border: 1px solid #000000;
   width: 10vw;
 `;
@@ -17,9 +17,9 @@ function KeywordButton({ keyword, isSelected, onClick }: keywordButtonProps) {
       onClick={() => {
         onClick(keyword);
       }}
-    >
-      {keyword}
-    </StyledButton>
+      label={keyword}
+      color={isSelected ? "primary" : "default"}
+    ></StyledButton>
   );
 }
 

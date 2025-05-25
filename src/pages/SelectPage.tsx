@@ -1,34 +1,49 @@
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router";
+import styled from "styled-components";
+import KeywordList from "../components/KeywordList";
+import KeywordSearchBar from "../components/KeywordSearchBar";
 import { useStore } from "../store/StoreContext";
-import KeywordButton from "../components/KeywordButton";
+
+const SelectContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+`;
 
 const SelectPage = observer(() => {
+  const navigate = useNavigate();
   const store = useStore();
   if (!store) return;
 
-  useEffect(() => {
-    for (const keyword of store.keywords) {
-      console.log(keyword);
-    }
-  }, []);
-
-  function handleKeywordToggle(s: string) {
-    store?.toggleKeywords(s);
-    console.log(store?.selectedKeywords);
-  }
-
   return (
-    <>
-      {[...store.keywords].map((keyword) => (
-        <KeywordButton
-          isSelected={store.selectedKeywords.has(keyword)}
-          keyword={keyword}
-          key={keyword}
-          onClick={handleKeywordToggle}
-        ></KeywordButton>
-      ))}
-    </>
+    <SelectContainer>
+      <KeywordSearchBar></KeywordSearchBar>
+      <KeywordList></KeywordList>
+      <ButtonContainer>
+        <Button
+          onClick={() => {
+            store.clearKeywords();
+          }}
+        >
+          초기화
+        </Button>
+        <Button
+          onClick={() => {
+            navigate("/interview");
+          }}
+        >
+          시작
+        </Button>
+      </ButtonContainer>
+    </SelectContainer>
   );
 });
 

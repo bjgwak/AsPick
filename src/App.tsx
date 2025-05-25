@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route path={"/"} element={<Navigate to={"/select"} />}></Route>
           <Route path={"/select"} element={<SelectPage />}></Route>
-          <Route path={"/intervew"} element={<InterviewPage />}></Route>
+          <Route path={"/interview"} element={<InterviewPage />}></Route>
           <Route path={"/result"} element={<ResultPage />}></Route>
         </Routes>
       </BrowserRouter>

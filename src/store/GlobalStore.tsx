@@ -12,8 +12,13 @@ export default class GlobalStore {
       selectedKeywords: observable,
       toggleKeywords: action,
       addKeywords: action,
+      clearKeywords: action,
     });
     this.keywords = new Set(initialKeywords);
+    this.selectedKeywords = new Set();
+  }
+
+  clearKeywords() {
     this.selectedKeywords = new Set();
   }
 
