@@ -1,15 +1,15 @@
 import { createContext, useContext } from "react";
-import GlobalStore from "./GlobalStore";
+import RootStore from "./RootStore";
 
-export const StoreContext = createContext<GlobalStore | null>(null);
+export const StoreContext = createContext<RootStore | null>(null);
 
-const globalStoreInstance = new GlobalStore();
+const rootStoreInstance = new RootStore();
 
 export const StoreProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   return (
-    <StoreContext.Provider value={globalStoreInstance}>
+    <StoreContext.Provider value={rootStoreInstance}>
       {children}
     </StoreContext.Provider>
   );

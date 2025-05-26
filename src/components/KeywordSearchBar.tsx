@@ -11,7 +11,7 @@ const KeywordText = styled(Typography)`
 
 const KeywordSearchBar = observer(() => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const store = useStore();
+  const store = useStore()?.keywordStore;
   if (!store) return;
 
   const searchedKeywords = useMemo(() => {

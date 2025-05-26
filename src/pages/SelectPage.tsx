@@ -20,7 +20,7 @@ const ButtonContainer = styled.div`
 
 const SelectPage = observer(() => {
   const navigate = useNavigate();
-  const store = useStore();
+  const store = useStore()?.keywordStore;
   if (!store) return;
 
   return (
@@ -37,7 +37,7 @@ const SelectPage = observer(() => {
         </Button>
         <Button
           onClick={() => {
-            navigate("/interview");
+            navigate("/standby");
           }}
         >
           시작

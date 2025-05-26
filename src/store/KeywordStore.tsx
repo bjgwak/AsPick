@@ -2,7 +2,7 @@ import { makeObservable, observable, action } from "mobx";
 
 const initialKeywords: string[] = ["react", "typescript", "mobx"];
 
-export default class GlobalStore {
+export default class KeywordStore {
   keywords: Set<string>;
   selectedKeywords: Set<string>;
 

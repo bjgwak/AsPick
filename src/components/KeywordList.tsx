@@ -9,7 +9,7 @@ const KeywordListWrapper = styled.div`
   flex-direction: row;
 `;
 const KeywordList = observer(() => {
-  const store = useStore();
+  const store = useStore()?.keywordStore;
   if (!store) return;
 
   function handleKeywordToggle(s: string) {

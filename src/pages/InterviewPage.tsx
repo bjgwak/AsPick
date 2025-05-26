@@ -1,5 +1,7 @@
+import { Suspense } from "react";
+
 function InterviewPage() {
-  return <></>;
+  return <Suspense fallback={<></>}></Suspense>;
 }
 
 export default InterviewPage;
