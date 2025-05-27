@@ -1,13 +1,30 @@
 import { makeObservable, observable, action } from "mobx";
+import AudioAction from "../actions/AudioAction";
 
 export default class QnAStore {
   constructor() {
-    makeObservable(this, { questions: observable, answers: observable });
+    makeObservable(this, {
+      micStream: observable,
+      setMicStream: action,
+      questions: observable,
+      answers: observable,
+      results: observable,
+    });
+
+    this.audioAction = new AudioAction();
   }
+
   questions: string[] = [];
   answers: string[] = [];
   results: string[] = [];
+
   micStream: MediaStream | null = null;
+
+  setMicStream(stream: MediaStream | null) {
+    this.micStream = stream;
+  }
+
+  audioAction: AudioAction;
 
   async queryQuestions(keywords: Set<string>) {
     //query something
