@@ -3,6 +3,7 @@ import Loading from "../components/Loading";
 import { useStore } from "../store/StoreContext";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import MicCheck from "../components/MicCheck";
 let promise: Promise<void> | null = null;
 let error: unknown = null;
 let done = false;
@@ -39,6 +40,7 @@ const StandbyContents: React.FC = () => {
 const StandbyPage: React.FC = () => {
   return (
     <Suspense fallback={<Loading />}>
+      <MicCheck></MicCheck>
       <StandbyContents />
     </Suspense>
   );

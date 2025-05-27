@@ -7,6 +7,7 @@ export default class QnAStore {
   questions: string[] = [];
   answers: string[] = [];
   results: string[] = [];
+  micStream: MediaStream | null = null;
 
   async queryQuestions(keywords: Set<string>) {
     //query something
