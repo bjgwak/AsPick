@@ -18,7 +18,7 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const SelectPage = observer(() => {
+const SelectPage: React.FC = observer(() => {
   const navigate = useNavigate();
   const store = useStore()?.keywordStore;
   if (!store) return;

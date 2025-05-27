@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-function InterviewPage() {
+const InterviewPage: React.FC = () => {
   return <Suspense fallback={<></>}></Suspense>;
-}
+};
 
 export default InterviewPage;

@@ -9,7 +9,7 @@ const KeywordText = styled(Typography)`
   }
 `;
 
-const KeywordSearchBar = observer(() => {
+const KeywordSearchBar: React.FC = observer(() => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const store = useStore()?.keywordStore;
   if (!store) return;

@@ -11,7 +11,11 @@ interface keywordButtonProps {
   isSelected: boolean;
   onClick: (s: string) => void;
 }
-function KeywordButton({ keyword, isSelected, onClick }: keywordButtonProps) {
+const KeywordButton: React.FC<keywordButtonProps> = ({
+  keyword,
+  isSelected,
+  onClick,
+}: keywordButtonProps) => {
   return (
     <StyledButton
       onClick={() => {
@@ -21,6 +25,6 @@ function KeywordButton({ keyword, isSelected, onClick }: keywordButtonProps) {
       color={isSelected ? "primary" : "default"}
     ></StyledButton>
   );
-}
+};
 
 export default KeywordButton;

@@ -7,7 +7,7 @@ let promise: Promise<void> | null = null;
 let error: unknown = null;
 let done = false;
 
-function StandbyContents() {
+const StandbyContents: React.FC = () => {
   const { keywordStore, qnaStore } = useStore()!;
   const navigate = useNavigate();
 
@@ -34,12 +34,13 @@ function StandbyContents() {
       <Button onClick={() => navigate("/exam")}>exam</Button>
     </>
   );
-}
+};
 
-export default function StandbyPage() {
+const StandbyPage: React.FC = () => {
   return (
     <Suspense fallback={<Loading />}>
       <StandbyContents />
     </Suspense>
   );
-}
+};
+export default StandbyPage;

@@ -8,7 +8,7 @@ const KeywordListWrapper = styled.div`
   display: flex;
   flex-direction: row;
 `;
-const KeywordList = observer(() => {
+const KeywordList: React.FC = observer(() => {
   const store = useStore()?.keywordStore;
   if (!store) return;
 
