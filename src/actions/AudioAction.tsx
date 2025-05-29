@@ -1,6 +1,4 @@
 import { makeAutoObservable, runInAction } from "mobx";
-
-import { useStore } from "../store/StoreContext";
 import type QnAStore from "../store/QnAStore";
 
 export default class AudioAction {
@@ -14,10 +12,8 @@ export default class AudioAction {
   selectedDeviceId: string = "";
   volume: number = 0;
 
-  constructor() {
-    const qnastore = useStore()?.qnaStore;
-    if (!qnastore) return;
-    this.store = qnastore;
+  constructor(qnaStore: QnAStore) {
+    this.store = qnaStore;
     makeAutoObservable(this);
   }
 
