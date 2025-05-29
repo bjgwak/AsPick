@@ -103,8 +103,7 @@ const MicCheck = observer(() => {
         disabled={!qnaStore.blob || !whisperAction.modelReady}
         onClick={async () => {
           if (!qnaStore.blob) return;
-          const text = await whisperAction.transcribeBlob(qnaStore.blob);
-          console.log("[transcribed]", text);
+          await whisperAction.transcribeBlob(qnaStore.blob);
         }}
       >
         Transcribe

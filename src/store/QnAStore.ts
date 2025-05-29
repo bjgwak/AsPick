@@ -8,6 +8,7 @@ export default class QnAStore {
   answers: string[] = [];
   results: string[] = [];
   blob: Blob = new Blob();
+  currentQuestionIndex: number = 0;
 
   micStream: MediaStream | null = null;
   audioAction: AudioAction;
@@ -21,12 +22,11 @@ export default class QnAStore {
       questions: observable,
       answers: observable,
       results: observable,
-      blob: observable,
     });
 
     this.audioAction = new AudioAction(this);
     this.recordAction = new RecordAction(this);
-    this.whisperAction = new WhisperAction();
+    this.whisperAction = new WhisperAction(this);
   }
 
   setMicStream(stream: MediaStream | null) {

@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import type QnAStore from "../store/QnAStore";
 
 // ──────────────────── 환경 상수 ────────────────────
 const MODEL_URL = "https://whisper.ggerganov.com/ggml-model-whisper-tiny.bin";
@@ -40,9 +41,36 @@ export default class WhisperAction {
   progress = 0;
   error: string | null = null;
 
-  constructor() {
+  private qnaStore?: QnAStore;
+
+  constructor(qnaStore: QnAStore) {
     makeAutoObservable(this);
+    this.qnaStore = qnaStore;
   }
+
+  // (파일 상단 import·상수 부분은 그대로)
+
+  // ───────────────────── 추가: 출력 파서 ─────────────────────
+  private handlePrint = (args: unknown[]) => {
+    const line = args.map(String).join(" ");
+
+    const m = line.match(
+      /^\s*\[\d{2}:\d{2}:\d{2}\.\d+\s+-->\s+\d{2}:\d{2}:\d{2}\.\d+\]\s*(.*)$/
+    );
+    if (!m || !m[1]) return; // 타임코드 라인이 아니면 무시
+
+    const text = m[1].trim();
+    if (!text) return;
+    //curIdx가 제대로 설정되어 있다고 가정함
+    runInAction(() => {
+      if (this.qnaStore) {
+        const curIdx = this.qnaStore.currentQuestionIndex;
+        this.qnaStore.answers[curIdx] += text;
+        console.log(this.qnaStore?.answers);
+      }
+    });
+  };
+  // ──────────────────────────────────────────────────────────
 
   // ──────────────────── private helpers ────────────────────
   /** 동적으로 <script> 주입 */
@@ -74,8 +102,10 @@ export default class WhisperAction {
     // main.js 로드 → window.Module 초기화 완료까지 대기
     if (!window.Module) {
       window.Module = {
-        print: (...a: unknown[]) => console.log("[W]", ...a),
-        printErr: (...a: unknown[]) => console.error("[W]", ...a),
+        print: (...a: unknown[]) => {
+          this.handlePrint(a);
+        },
+        printErr: (...a: unknown[]) => {},
       } as Partial<WhisperModule>;
     }
 
@@ -99,10 +129,9 @@ export default class WhisperAction {
 
     try {
       const mod = await this.ensureRuntime();
-      const loadRemote = window.loadRemote!; // helpers.js 가 이미 확인됐음
+      const loadRemote = window.loadRemote!;
 
       await new Promise<void>((resolve, reject) => {
-        /** helpers.js 콜백 – 성공 시 딱 한 번 호출됨 */
         const storeFS = (fname: string, buf: Uint8Array) => {
           try {
             mod.FS_unlink(fname);
@@ -134,7 +163,7 @@ export default class WhisperAction {
   }
 
   /** MediaRecorder blob → 자막 문자열 (콘솔에 전체 로그도 남음) */
-  async transcribeBlob(blob: Blob): Promise<string> {
+  async transcribeBlob(blob: Blob) {
     if (!this.modelReady) throw new Error("모델이 아직 준비되지 않았습니다.");
 
     const mod = await this.ensureRuntime();
@@ -150,8 +179,6 @@ export default class WhisperAction {
 
     const ret = mod.full_default(this.ctxPtr, pcm, LANGUAGE, N_THREADS, 0);
     console.log("whisper full_default ret:", ret);
-
-    return "(결과는 console 에 출력됨)";
   }
 
   // ──────────────────── util ────────────────────
