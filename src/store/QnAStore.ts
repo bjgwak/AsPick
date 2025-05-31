@@ -1,7 +1,14 @@
-import { makeObservable, observable, action } from "mobx";
+import { makeAutoObservable } from "mobx";
 import AudioAction from "../actions/AudioAction";
 import RecordAction from "../actions/RecordAction";
 import WhisperAction from "../actions/WhisperAction";
+import { useNavigate } from "react-router";
+
+const sampleQuestions: string[] = [
+  "a는 무엇인가요?",
+  "b는 무엇인가요?",
+  "c는 무엇인가요?",
+];
 
 export default class QnAStore {
   questions: string[] = [];
@@ -16,17 +23,13 @@ export default class QnAStore {
   whisperAction: WhisperAction;
 
   constructor() {
-    makeObservable(this, {
-      micStream: observable,
-      setMicStream: action,
-      questions: observable,
-      answers: observable,
-      results: observable,
-    });
+    makeAutoObservable(this);
 
     this.audioAction = new AudioAction(this);
     this.recordAction = new RecordAction(this);
     this.whisperAction = new WhisperAction(this);
+
+    this.questions = [...sampleQuestions];
   }
 
   setMicStream(stream: MediaStream | null) {
@@ -42,7 +45,7 @@ export default class QnAStore {
         resolve();
       }, 2000);
     });
-    this.questions = ["1", "2"];
+
     this.answers = new Array(this.questions.length).fill("");
 
     return true;
@@ -68,5 +71,9 @@ export default class QnAStore {
   submitAnswer(idx: number, answer: string) {
     this.answers[idx] = answer;
     console.log(this.answers);
+  }
+
+  requestNextQuestion() {
+    this.currentQuestionIndex++;
   }
 }

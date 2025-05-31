@@ -22,9 +22,7 @@ const MicCheck = observer(() => {
 
   useEffect(() => {
     audioAction.init();
-    return () => {
-      audioAction.cleanup();
-    };
+    return () => audioAction.cleanup();
   }, []);
 
   return (
