@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import AudioAction from "../actions/AudioAction";
 import RecordAction from "../actions/RecordAction";
 import WhisperAction from "../actions/WhisperAction";
-import { useNavigate } from "react-router";
 
 const sampleQuestions: string[] = [
   "a는 무엇인가요?",

@@ -1,3 +1,4 @@
+/* InterviewPage.tsx */
 import { useEffect, useRef, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
@@ -16,6 +17,7 @@ const InterviewBox = styled(Box)`
   flex-direction: column;
   align-items: center;
 `;
+
 const InterviewPage: React.FC = observer(() => {
   const { qnaStore } = useStore() ?? {};
   const navigate = useNavigate();
@@ -28,17 +30,18 @@ const InterviewPage: React.FC = observer(() => {
 
   const [isPrepared, setIsPrepared] = useState(true);
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
-  const timerRef = useRef<number>(0);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     setIsPrepared(true);
     setTimeLeft(QUESTION_TIME);
 
-    qnaStore.recordAction.startRecord();
-
     const prepId = window.setTimeout(() => {
       setIsPrepared(false);
-      timerRef.current = window.setInterval(
+
+      qnaStore.recordAction.startRecord();
+
+      intervalRef.current = window.setInterval(
         () => setTimeLeft((t) => t - 1),
         1000
       );
@@ -46,11 +49,19 @@ const InterviewPage: React.FC = observer(() => {
 
     return () => {
       clearTimeout(prepId);
-      clearInterval(timerRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
       qnaStore.recordAction.stopRecord();
-      qnaStore.whisperAction.transcribeBlob(qnaStore.blob);
     };
   }, [qnaStore.currentQuestionIndex]);
+
+  useEffect(() => {
+    if (!qnaStore.blob) return;
+
+    (async () => {
+      await qnaStore.whisperAction.transcribeBlob(qnaStore.blob);
+    })();
+  }, [qnaStore.blob]);
 
   useEffect(() => {
     if (!isPrepared && timeLeft <= 0) handleNextButton();
@@ -58,12 +69,13 @@ const InterviewPage: React.FC = observer(() => {
 
   const fmt = (s: number) =>
     `${Math.floor(s / 60)}:${`${s % 60}`.padStart(2, "0")}`;
-
   const percent = (timeLeft / QUESTION_TIME) * 100;
 
   const handleNextButton = () => {
+    qnaStore.recordAction.stopRecord();
+
     qnaStore.requestNextQuestion();
-    clearInterval(timerRef.current);
+
     if (qnaStore.currentQuestionIndex >= qnaStore.questions.length) {
       navigate("/result");
     }

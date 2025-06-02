@@ -25,8 +25,6 @@ const ExamPage: React.FC = observer(() => {
     new Array(qnaStore.questions.length).fill(true)
   );
 
-  const test: string[] = ["1", "2"];
-
   const submitAnswer = (idx: number, answer: string) => {
     qnaStore.submitAnswer(idx, answer);
     setIsButtonActivated((prev) => {
@@ -43,7 +41,7 @@ const ExamPage: React.FC = observer(() => {
 
   return (
     <ExamePageContainer>
-      {test.map((value, idx) => (
+      {qnaStore.questions.map((value, idx) => (
         <QuestionBox
           question={value}
           submitAnswer={submitAnswer}

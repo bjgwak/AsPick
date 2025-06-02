@@ -48,8 +48,6 @@ export default class WhisperAction {
     this.qnaStore = qnaStore;
   }
 
-  // (파일 상단 import·상수 부분은 그대로)
-
   // ───────────────────── 추가: 출력 파서 ─────────────────────
   private handlePrint = (args: unknown[]) => {
     const line = args.map(String).join(" ");
@@ -61,7 +59,7 @@ export default class WhisperAction {
 
     const text = m[1].trim();
     if (!text) return;
-    //curIdx가 제대로 설정되어 있다고 가정함
+    //curIdx가 제대로 설정되어 있다고 가정
     runInAction(() => {
       if (this.qnaStore) {
         const curIdx = this.qnaStore.currentQuestionIndex;
@@ -165,7 +163,7 @@ export default class WhisperAction {
   /** MediaRecorder blob → 자막 문자열 (콘솔에 전체 로그도 남음) */
   async transcribeBlob(blob: Blob) {
     if (!this.modelReady) throw new Error("모델이 아직 준비되지 않았습니다.");
-
+    if (!blob) throw new Error("blob이 없습니다.");
     const mod = await this.ensureRuntime();
 
     // whisper context 초기화 (once)
