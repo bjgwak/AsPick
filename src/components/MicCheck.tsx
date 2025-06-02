@@ -52,25 +52,6 @@ const MicCheck = observer(() => {
         sx={{ height: 10 }}
       />
 
-      <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            recordAction.startRecord();
-          }}
-        >
-          시작
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            recordAction.stopRecord();
-          }}
-        >
-          중지
-        </Button>
-      </Box>
-
       <Box sx={{ mt: 3 }}>
         {whisperAction.modelReady ? (
           <Typography color="success.main">모델 준비 완료 ✔</Typography>
@@ -94,7 +75,7 @@ const MicCheck = observer(() => {
           </>
         )}
       </Box>
-
+      {/*
       <Button
         sx={{ mt: 2 }}
         variant="contained"
@@ -105,7 +86,7 @@ const MicCheck = observer(() => {
         }}
       >
         Transcribe
-      </Button>
+      </Button>*/}
     </Box>
   );
 });

@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import type QnAStore from "../store/QnAStore";
+import type { AudioData } from "../store/QnAStore";
 
 // ──────────────────── 환경 상수 ────────────────────
 const MODEL_URL = "https://whisper.ggerganov.com/ggml-model-whisper-tiny.bin";
@@ -43,6 +44,10 @@ export default class WhisperAction {
 
   private qnaStore?: QnAStore;
 
+  private jobQueue: AudioData[] = [];
+  private currentJob: AudioData | null = null;
+  private currentTranscribedText: string = "";
+  private debounceTimer: number | null = null;
   constructor(qnaStore: QnAStore) {
     makeAutoObservable(this);
     this.qnaStore = qnaStore;
@@ -59,13 +64,11 @@ export default class WhisperAction {
 
     const text = m[1].trim();
     if (!text) return;
-    //curIdx가 제대로 설정되어 있다고 가정
+    //TODO: 상수화
     runInAction(() => {
-      if (this.qnaStore) {
-        const curIdx = this.qnaStore.currentQuestionIndex;
-        this.qnaStore.answers[curIdx] += text;
-        console.log(this.qnaStore?.answers);
-      }
+      this.currentTranscribedText += text;
+      if (this.debounceTimer) clearTimeout(this.debounceTimer);
+      this.debounceTimer = window.setTimeout(() => this.finalizeJob(), 3000);
     });
   };
   // ──────────────────────────────────────────────────────────
@@ -160,7 +163,38 @@ export default class WhisperAction {
     }
   }
 
+  pushTranscribeJob(audioData: AudioData) {
+    this.jobQueue.push(audioData);
+    console.log("drain start:", this.jobQueue);
+    this.drain();
+  }
+
+  private async drain() {
+    if (this.currentJob || !this.jobQueue.length) return;
+
+    this.currentJob = this.jobQueue.shift()!;
+    this.transcribeBlob(this.currentJob.blob); // blocking
+    this.drain(); // 다음 job
+  }
+
+  private finalizeJob() {
+    if (!this.qnaStore || !this.currentJob) return;
+
+    this.qnaStore.answers[this.currentJob.questionIdx] =
+      this.currentTranscribedText.trim();
+
+    // 정리
+
+    this.currentJob = null;
+    this.currentTranscribedText = "";
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
+    this.debounceTimer = null;
+    console.log("finalize: ", this.qnaStore.answers);
+    // 다음 큐로
+    this.drain();
+  }
   /** MediaRecorder blob → 자막 문자열 (콘솔에 전체 로그도 남음) */
+  //TODO: 이미 질문이 처리중이면 기다렸다가 넘겨야겠는데?
   async transcribeBlob(blob: Blob) {
     if (!this.modelReady) throw new Error("모델이 아직 준비되지 않았습니다.");
     if (!blob) throw new Error("blob이 없습니다.");

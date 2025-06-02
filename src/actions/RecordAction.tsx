@@ -1,7 +1,7 @@
-//reference: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/js/ort-whisper/main.js
 import { makeAutoObservable } from "mobx";
 
 import type QnAStore from "../store/QnAStore";
+import type { AudioData } from "../store/QnAStore";
 
 const kIntervalAudio_ms = 1000;
 
@@ -9,11 +9,13 @@ export default class RecordAction {
   private store: QnAStore | undefined;
   private mediaRecorder: MediaRecorder | undefined;
   isRecording: boolean;
+  currentRecordingIdx: number;
 
   constructor(qnaStore: QnAStore) {
     this.store = qnaStore;
 
     this.isRecording = false;
+    this.currentRecordingIdx = 0;
     makeAutoObservable(this);
     if (this.store.micStream)
       this.mediaRecorder = new MediaRecorder(this.store.micStream);
@@ -35,10 +37,10 @@ export default class RecordAction {
 
     this.mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-      if (this.store) {
-        this.store.blob = blob;
-        console.log(this.store.blob);
-      }
+      this.store?.enqueueAudioData({
+        blob: blob,
+        questionIdx: this.currentRecordingIdx,
+      } as AudioData);
     };
     this.mediaRecorder.start(kIntervalAudio_ms);
     this.isRecording = true;
@@ -46,8 +48,9 @@ export default class RecordAction {
   }
 
   // stop recording
-  stopRecord() {
+  stopRecord(idx: number) {
     if (this.mediaRecorder) {
+      this.currentRecordingIdx = idx;
       this.mediaRecorder.stop();
       this.mediaRecorder = undefined;
       this.isRecording = false;

@@ -9,12 +9,17 @@ const sampleQuestions: string[] = [
   "c는 무엇인가요?",
 ];
 
+export interface AudioData {
+  blob: Blob;
+  questionIdx: number;
+}
+
 export default class QnAStore {
   questions: string[] = [];
   answers: string[] = [];
   results: string[] = [];
-  blob: Blob = new Blob();
   currentQuestionIndex: number = 0;
+  private pendingJobs = new Set<number>();
 
   micStream: MediaStream | null = null;
   audioAction: AudioAction;
@@ -67,12 +72,17 @@ export default class QnAStore {
     return true;
   }
 
-  submitAnswer(idx: number, answer: string) {
-    this.answers[idx] = answer;
-    console.log(this.answers);
-  }
-
   requestNextQuestion() {
     this.currentQuestionIndex++;
+  }
+  enqueueAudioData = (audioData: AudioData) => {
+    this.pendingJobs.add(audioData.questionIdx); //TODO: pendingJobs에서 빼는 조건은 어떻게?
+
+    // WhisperAction은 즉시 반환하며, 실제 전사 완료 시 onResult 콜백이 실행된다.
+    this.whisperAction.pushTranscribeJob(audioData);
+  };
+
+  get isProcessing() {
+    return this.pendingJobs.size > 0;
   }
 }

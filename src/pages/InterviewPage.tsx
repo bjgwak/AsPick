@@ -51,17 +51,9 @@ const InterviewPage: React.FC = observer(() => {
       clearTimeout(prepId);
       if (intervalRef.current) clearInterval(intervalRef.current);
 
-      qnaStore.recordAction.stopRecord();
+      qnaStore.recordAction.stopRecord(qnaStore.currentQuestionIndex);
     };
   }, [qnaStore.currentQuestionIndex]);
-
-  useEffect(() => {
-    if (!qnaStore.blob) return;
-
-    (async () => {
-      await qnaStore.whisperAction.transcribeBlob(qnaStore.blob);
-    })();
-  }, [qnaStore.blob]);
 
   useEffect(() => {
     if (!isPrepared && timeLeft <= 0) handleNextButton();
@@ -72,7 +64,7 @@ const InterviewPage: React.FC = observer(() => {
   const percent = (timeLeft / QUESTION_TIME) * 100;
 
   const handleNextButton = () => {
-    qnaStore.recordAction.stopRecord();
+    qnaStore.recordAction.stopRecord(qnaStore.currentQuestionIndex);
 
     qnaStore.requestNextQuestion();
 
