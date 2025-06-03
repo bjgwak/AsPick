@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction, when } from "mobx";
 
 import type QnAStore from "../store/QnAStore";
 import type { AudioData } from "../store/QnAStore";
@@ -41,19 +41,26 @@ export default class RecordAction {
         blob: blob,
         questionIdx: this.currentRecordingIdx,
       } as AudioData);
+      runInAction(() => {
+        this.isRecording = false;
+      });
     };
     this.mediaRecorder.start(kIntervalAudio_ms);
-    this.isRecording = true;
+    runInAction(() => {
+      this.isRecording = true;
+    });
+
     console.log("record started");
   }
 
   // stop recording
-  stopRecord(idx: number) {
+  async stopRecord(idx: number) {
     if (this.mediaRecorder) {
+      const done = when(() => !this.isRecording);
       this.currentRecordingIdx = idx;
       this.mediaRecorder.stop();
       this.mediaRecorder = undefined;
-      this.isRecording = false;
+      await done;
       console.log("record stopped");
     }
   }

@@ -63,8 +63,8 @@ const InterviewPage: React.FC = observer(() => {
     `${Math.floor(s / 60)}:${`${s % 60}`.padStart(2, "0")}`;
   const percent = (timeLeft / QUESTION_TIME) * 100;
 
-  const handleNextButton = () => {
-    qnaStore.recordAction.stopRecord(qnaStore.currentQuestionIndex);
+  const handleNextButton = async () => {
+    await qnaStore.recordAction.stopRecord(qnaStore.currentQuestionIndex);
 
     qnaStore.requestNextQuestion();
 

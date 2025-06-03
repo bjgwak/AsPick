@@ -26,7 +26,7 @@ const ExamPage: React.FC = observer(() => {
   );
 
   const submitAnswer = (idx: number, answer: string) => {
-    qnaStore.submitAnswer(idx, answer);
+    qnaStore.answers[idx] = answer;
     setIsButtonActivated((prev) => {
       const updated = [...prev];
       updated[idx] = false;

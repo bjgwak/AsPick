@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction } from "mobx";
+import { makeAutoObservable, when } from "mobx";
 import AudioAction from "../actions/AudioAction";
 import RecordAction from "../actions/RecordAction";
 import WhisperAction from "../actions/WhisperAction";
@@ -58,18 +58,7 @@ export default class QnAStore {
   async queryResultsToStore() {
     //this.pendingJobs가 모두 없어질 때까지 대기한 뒤, 네트워크에 쿼리
 
-    if (this.pendingJobs.size !== 0) {
-      await new Promise<void>((resolve) => {
-        reaction(
-          () => this.pendingJobs.size,
-          (size, _prev, _) => {
-            if (size === 0) {
-              resolve(); // 대기 종료
-            }
-          }
-        );
-      });
-    }
+    await when(() => this.pendingJobs.size === 0);
 
     this.results = new Array(this.answers.length).fill("");
 
