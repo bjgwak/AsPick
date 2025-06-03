@@ -18,7 +18,7 @@ const ResultContents: React.FC = () => {
   if (!done) {
     if (!promise) {
       promise = qnaStore
-        .queryResults()
+        .queryResultsToStore()
         .then(() => {
           done = true;
         })
@@ -38,7 +38,7 @@ const ResultContents: React.FC = () => {
   return (
     <>
       {qnaStore.results.map((value, index) => (
-        <ResultBox result={value} key={index}></ResultBox>
+        <ResultBox result={`${index}: ${value}`} key={index}></ResultBox>
       ))}
       <Button onClick={handleReset}>처음으로</Button>
     </>

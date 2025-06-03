@@ -75,18 +75,6 @@ const MicCheck = observer(() => {
           </>
         )}
       </Box>
-      {/*
-      <Button
-        sx={{ mt: 2 }}
-        variant="contained"
-        disabled={!qnaStore.blob || !whisperAction.modelReady}
-        onClick={async () => {
-          if (!qnaStore.blob) return;
-          await whisperAction.transcribeBlob(qnaStore.blob);
-        }}
-      >
-        Transcribe
-      </Button>*/}
     </Box>
   );
 });

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, reaction } from "mobx";
 import AudioAction from "../actions/AudioAction";
 import RecordAction from "../actions/RecordAction";
 import WhisperAction from "../actions/WhisperAction";
@@ -55,19 +55,24 @@ export default class QnAStore {
     return true;
   }
 
-  async queryResults() {
+  async queryResultsToStore() {
     //query something
-    this.results = new Array(this.questions.length).fill("");
+    //this.pendingJobs가 모두 없어질 때까지 대기한 뒤, 네트워크에 쿼리
 
     await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log("done");
-        resolve();
-      }, 2000);
+      reaction(
+        () => this.pendingJobs.size,
+        (size, _prev, _) => {
+          if (size === 0) {
+            resolve(); // 대기 종료
+          }
+        }
+      );
     });
+    this.results = new Array(this.questions.length).fill("");
 
     for (let i = 0; i < this.results.length; i++) {
-      this.results[i] = `${i}`;
+      this.results[i] = `${this.answers[i]}`;
     }
     return true;
   }
@@ -76,10 +81,13 @@ export default class QnAStore {
     this.currentQuestionIndex++;
   }
   enqueueAudioData = (audioData: AudioData) => {
-    this.pendingJobs.add(audioData.questionIdx); //TODO: pendingJobs에서 빼는 조건은 어떻게?
+    this.pendingJobs.add(audioData.questionIdx);
 
-    // WhisperAction은 즉시 반환하며, 실제 전사 완료 시 onResult 콜백이 실행된다.
     this.whisperAction.pushTranscribeJob(audioData);
+  };
+
+  dequeueAudioData = (questionIdx: number) => {
+    this.pendingJobs.delete(questionIdx);
   };
 
   get isProcessing() {

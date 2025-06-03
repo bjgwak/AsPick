@@ -71,9 +71,7 @@ export default class WhisperAction {
       this.debounceTimer = window.setTimeout(() => this.finalizeJob(), 3000);
     });
   };
-  // ──────────────────────────────────────────────────────────
 
-  // ──────────────────── private helpers ────────────────────
   /** 동적으로 <script> 주입 */
   private loadScript = (url: string) =>
     new Promise<void>((resolve, reject) => {
@@ -86,21 +84,17 @@ export default class WhisperAction {
       document.head.appendChild(s);
     });
 
-  /** helpers.js + main.js + IndexedDB 네임스페이스 확보 */
   private async ensureRuntime(): Promise<WhisperModule> {
     if (this.module) return this.module;
 
-    // helpers.js 가 기대하는 전역 변수만 우아하게 보강
     window.dbName ??= "whisper-cache";
     window.dbVersion ??= 1;
 
-    // helpers.js 로드 (loadRemote 전역 함수 제공)
     await this.loadScript(`${PUBLIC_DIR}/helpers.js`);
     if (typeof window.loadRemote !== "function") {
       throw new Error("helpers.js failed to expose loadRemote");
     }
 
-    // main.js 로드 → window.Module 초기화 완료까지 대기
     if (!window.Module) {
       window.Module = {
         print: (...a: unknown[]) => {
@@ -182,8 +176,7 @@ export default class WhisperAction {
 
     this.qnaStore.answers[this.currentJob.questionIdx] =
       this.currentTranscribedText.trim();
-
-    // 정리
+    this.qnaStore.dequeueAudioData(this.currentJob.questionIdx);
 
     this.currentJob = null;
     this.currentTranscribedText = "";
