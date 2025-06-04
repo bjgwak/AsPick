@@ -17,8 +17,8 @@ const ResultContents: React.FC = () => {
 
   if (!done) {
     if (!promise) {
-      promise = qnaStore
-        .queryResultsToStore()
+      promise = qnaStore.geminiAction
+        .queryResults()
         .then(() => {
           done = true;
         })
@@ -31,7 +31,7 @@ const ResultContents: React.FC = () => {
   }
 
   const handleReset = () => {
-    //store 초기화 코드
+    //store나 관련 데이터 리셋
     navigate("/");
   };
 

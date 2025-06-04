@@ -186,8 +186,6 @@ export default class WhisperAction {
     // 다음 큐로
     this.drain();
   }
-  /** MediaRecorder blob → 자막 문자열 (콘솔에 전체 로그도 남음) */
-  //TODO: 이미 질문이 처리중이면 기다렸다가 넘겨야겠는데?
   async transcribeBlob(blob: Blob) {
     if (!this.modelReady) throw new Error("모델이 아직 준비되지 않았습니다.");
     if (!blob) throw new Error("blob이 없습니다.");
@@ -202,8 +200,7 @@ export default class WhisperAction {
     // blob → 16 kHz mono Float32 PCM
     const pcm = await this.blobToPCM(blob);
 
-    const ret = mod.full_default(this.ctxPtr, pcm, LANGUAGE, N_THREADS, 0);
-    console.log("whisper full_default ret:", ret);
+    mod.full_default(this.ctxPtr, pcm, LANGUAGE, N_THREADS, 0);
   }
 
   // ──────────────────── util ────────────────────

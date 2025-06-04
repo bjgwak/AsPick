@@ -16,7 +16,7 @@ const StandbyContents: React.FC = () => {
 
   if (!done) {
     if (!promise) {
-      promise = qnaStore
+      promise = qnaStore.geminiAction
         .queryQuestions(keywordStore.selectedKeywords)
         .then(() => {
           done = true;
