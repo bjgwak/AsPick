@@ -74,4 +74,21 @@ export default class GeminiAction {
     this.store.results = results;*/
     this.store.results = sampleResults;
   }
+
+  async validateApiKey(): Promise<boolean> {
+    if (!this.apiKey) return false;
+    try {
+      const url = `${geminiAPIURL}key=${this.apiKey}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: "ping" }] }],
+        }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
 }
