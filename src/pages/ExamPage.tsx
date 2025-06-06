@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ExamePageContainer = styled(Box)`
+const ExamPageContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -40,7 +40,7 @@ const ExamPage: React.FC = observer(() => {
   }, [isButtonActivated]);
 
   return (
-    <ExamePageContainer>
+    <ExamPageContainer>
       {qnaStore.questions.map((value, idx) => (
         <QuestionBox
           question={value}
@@ -50,7 +50,7 @@ const ExamPage: React.FC = observer(() => {
           isActivated={isButtonActivated[idx]}
         ></QuestionBox>
       ))}
-    </ExamePageContainer>
+    </ExamPageContainer>
   );
 });
 
