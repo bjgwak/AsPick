@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import KeywordList from "../components/KeywordList";
 import KeywordSearchBar from "../components/KeywordSearchBar";
 import { useStore } from "../store/StoreContext";
+import WhisperDownloader from "../components/WhisperDownLoader";
 
 const SelectContainer = styled.div`
   display: flex;
@@ -19,9 +19,9 @@ const ButtonContainer = styled.div`
 `;
 
 const SelectPage: React.FC = observer(() => {
+  const { keywordStore, qnaStore } = useStore()!;
   const navigate = useNavigate();
-  const store = useStore()?.keywordStore;
-  if (!store) return;
+  if (!keywordStore || !qnaStore) return null;
 
   return (
     <SelectContainer>
@@ -30,7 +30,7 @@ const SelectPage: React.FC = observer(() => {
       <ButtonContainer>
         <Button
           onClick={() => {
-            store.clearKeywords();
+            keywordStore.clearKeywords();
           }}
         >
           초기화
@@ -43,6 +43,14 @@ const SelectPage: React.FC = observer(() => {
           시작
         </Button>
       </ButtonContainer>
+      <WhisperDownloader />
+      <TextField
+        label="Gemini API Key"
+        size="small"
+        value={qnaStore.geminiAction.apiKey}
+        onChange={(e) => qnaStore.geminiAction.setApiKey(e.target.value)}
+        sx={{ mt: 2 }}
+      />
     </SelectContainer>
   );
 });

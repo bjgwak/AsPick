@@ -4,12 +4,6 @@ import RecordAction from "../actions/RecordAction";
 import WhisperAction from "../actions/WhisperAction";
 import GeminiAction from "../actions/GeminiAction";
 
-const sampleQuestions: string[] = [
-  "a는 무엇인가요?",
-  "b는 무엇인가요?",
-  "c는 무엇인가요?",
-];
-
 export interface AudioData {
   blob: Blob;
   questionIdx: number;
@@ -35,8 +29,6 @@ export default class QnAStore {
     this.recordAction = new RecordAction(this);
     this.whisperAction = new WhisperAction(this);
     this.geminiAction = new GeminiAction(this);
-
-    this.questions = [...sampleQuestions];
   }
 
   setMicStream(stream: MediaStream | null) {
