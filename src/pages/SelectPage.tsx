@@ -5,7 +5,7 @@ import styled, { css, keyframes } from "styled-components";
 import KeywordList from "../components/KeywordList";
 import KeywordSearchBar from "../components/KeywordSearchBar";
 import { useStore } from "../store/StoreContext";
-import WhisperDownloader from "../components/WhisperDownLoader";
+import WhisperDownloader from "../components/WhisperDownloader";
 import { useState } from "react";
 
 const SelectContainer = styled.div`
