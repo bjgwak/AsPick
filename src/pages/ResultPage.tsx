@@ -1,9 +1,10 @@
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { Suspense } from "react";
 import { useNavigate } from "react-router";
 import Loading from "../components/Loading";
 import { useStore } from "../store/StoreContext";
 import ResultBox from "../components/ResultBox";
+import Layout from "../components/Layout";
 
 let promise: Promise<void> | null = null;
 let error: unknown = null;
@@ -36,19 +37,23 @@ const ResultContents: React.FC = () => {
   };
 
   return (
-    <>
+    <Stack spacing={2}>
       {qnaStore.results.map((value, index) => (
-        <ResultBox result={`${index}: ${value}`} key={index}></ResultBox>
+        <ResultBox result={`${index}: ${value}`} key={index} />
       ))}
-      <Button onClick={handleReset}>처음으로</Button>
-    </>
+      <Button variant="contained" onClick={handleReset}>
+        처음으로
+      </Button>
+    </Stack>
   );
 };
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<Loading />}>
-      <ResultContents />
-    </Suspense>
+    <Layout title="결과">
+      <Suspense fallback={<Loading />}>
+        <ResultContents />
+      </Suspense>
+    </Layout>
   );
 }

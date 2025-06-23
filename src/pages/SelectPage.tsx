@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Stack, Paper } from "@mui/material";
 import { useNavigate } from "react-router";
 import styled, { css, keyframes } from "styled-components";
 import KeywordList from "../components/KeywordList";
@@ -7,10 +7,14 @@ import KeywordSearchBar from "../components/KeywordSearchBar";
 import { useStore } from "../store/StoreContext";
 import WhisperDownloader from "../components/WhisperDownloader";
 import { useState } from "react";
+import Layout from "../components/Layout";
+import { spacing } from "../tokens";
 
-const SelectContainer = styled.div`
+const SelectContainer = styled(Paper)`
   display: flex;
   flex-direction: column;
+  gap: ${spacing.md}px;
+  padding: ${spacing.lg}px;
 `;
 
 const ButtonContainer = styled.div`
@@ -51,35 +55,40 @@ const SelectPage: React.FC = observer(() => {
     }
   };
   return (
-    <SelectContainer>
-      <KeywordSearchBar></KeywordSearchBar>
-      <KeywordList></KeywordList>
-      <ButtonContainer>
-        <Button
-          onClick={() => {
-            keywordStore.clearKeywords();
-          }}
-        >
-          초기화
-        </Button>
-        <Button onClick={handleStart}>시작</Button>
-      </ButtonContainer>
-      <WhisperDownloader />
-      <ApiKeyField
-        label="Gemini API Key"
-        size="small"
-        value={qnaStore.geminiAction.apiKey}
-        onChange={(e) => qnaStore.geminiAction.setApiKey(e.target.value)}
-        error={isApiKeyError}
-        $shake={isShake}
-        sx={{ mt: 2 }}
-      />
-      {isApiKeyError && (
-        <Typography color="error" variant="body2">
-          유효하지 않은 API 키입니다.
-        </Typography>
-      )}
-    </SelectContainer>
+    <Layout title="키워드 선택">
+      <SelectContainer>
+        <KeywordSearchBar />
+        <KeywordList />
+        <Stack direction="row" spacing={2} justifyContent="center">
+          <Button
+            variant="outlined"
+            onClick={() => {
+              keywordStore.clearKeywords();
+            }}
+          >
+            초기화
+          </Button>
+          <Button variant="contained" onClick={handleStart}>
+            시작
+          </Button>
+        </Stack>
+        <WhisperDownloader />
+        <ApiKeyField
+          label="Gemini API Key"
+          size="small"
+          value={qnaStore.geminiAction.apiKey}
+          onChange={(e) => qnaStore.geminiAction.setApiKey(e.target.value)}
+          error={isApiKeyError}
+          $shake={isShake}
+          sx={{ mt: 2 }}
+        />
+        {isApiKeyError && (
+          <Typography color="error" variant="body2">
+            유효하지 않은 API 키입니다.
+          </Typography>
+        )}
+      </SelectContainer>
+    </Layout>
   );
 });
 

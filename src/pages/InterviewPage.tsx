@@ -1,6 +1,5 @@
-/* InterviewPage.tsx */
 import { useEffect, useRef, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Paper } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { useStore } from "../store/StoreContext";
@@ -8,14 +7,18 @@ import TimerBar from "../components/TimerBar";
 import PrepOverlay from "../components/PrepOverlay";
 import MicVisualizer from "../components/MicVisualizer";
 import styled from "styled-components";
+import { spacing } from "../tokens";
+import Layout from "../components/Layout";
 
 const QUESTION_TIME = 90;
 const PREP_TIME = 5;
 
-const InterviewBox = styled(Box)`
+const InterviewBox = styled(Paper)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: ${spacing.md}px;
+  padding: ${spacing.lg}px;
 `;
 
 const InterviewPage: React.FC = observer(() => {
@@ -74,36 +77,38 @@ const InterviewPage: React.FC = observer(() => {
   };
 
   return (
-    <InterviewBox>
-      {isPrepared ? (
-        <PrepOverlay />
-      ) : (
-        <>
-          <TimerBar
-            percent={percent}
-            label={`${fmt(timeLeft)} / ${fmt(QUESTION_TIME)}`}
-          />
-          <Typography variant="h6" marginBottom={3}>
-            {qnaStore.questions[qnaStore.currentQuestionIndex]}
-          </Typography>
-          <MicVisualizer />
-          <Button
-            variant="contained"
-            color={
-              qnaStore.currentQuestionIndex >= qnaStore.questions.length - 1
-                ? "secondary"
-                : "primary"
-            }
-            sx={{ mt: 4 }}
-            onClick={handleNextButton}
-          >
-            {qnaStore.currentQuestionIndex >= qnaStore.questions.length - 1
-              ? "종료"
-              : "다음"}
-          </Button>
-        </>
-      )}
-    </InterviewBox>
+    <Layout title="면접 진행">
+      <InterviewBox>
+        {isPrepared ? (
+          <PrepOverlay />
+        ) : (
+          <>
+            <TimerBar
+              percent={percent}
+              label={`${fmt(timeLeft)} / ${fmt(QUESTION_TIME)}`}
+            />
+            <Typography variant="h6" marginBottom={3}>
+              {qnaStore.questions[qnaStore.currentQuestionIndex]}
+            </Typography>
+            <MicVisualizer />
+            <Button
+              variant="contained"
+              color={
+                qnaStore.currentQuestionIndex >= qnaStore.questions.length - 1
+                  ? "secondary"
+                  : "primary"
+              }
+              sx={{ mt: 4 }}
+              onClick={handleNextButton}
+            >
+              {qnaStore.currentQuestionIndex >= qnaStore.questions.length - 1
+                ? "종료"
+                : "다음"}
+            </Button>
+          </>
+        )}
+      </InterviewBox>
+    </Layout>
   );
 });
 
