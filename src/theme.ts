@@ -1,17 +1,30 @@
 import { createTheme } from "@mui/material/styles";
+import { colors, radii, spacing, fontSizes } from "./tokens";
 
 const theme = createTheme({
+  spacing: spacing.sm,
   palette: {
     mode: "light",
     primary: {
-      main: "#81c784",
+      main: colors.primary,
     },
     secondary: {
-      main: "#388e3c",
+      main: colors.secondary,
     },
     background: {
-      default: "#f5f5f5",
+      default: colors.background,
     },
+    text: {
+      primary: colors.text,
+    },
+  },
+  typography: {
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontSize: fontSizes.md,
+    h6: { fontSize: fontSizes.lg },
+  },
+  shape: {
+    borderRadius: radii.md,
   },
 });
 

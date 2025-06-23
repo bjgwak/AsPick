@@ -3,11 +3,16 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { StoreProvider } from "./store/StoreContext.tsx";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <StoreProvider>
-      <App />
-    </StoreProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <StoreProvider>
+        <App />
+      </StoreProvider>
+    </ThemeProvider>
   </StrictMode>
 );
